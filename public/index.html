@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Seguro</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <main class="app">
+
+    <section class="hero">
+      <div>
+        <h1>Login Seguro</h1>
+        <p>
+          Sistema académico con validación de contraseña segura, CAPTCHA,
+          control de intentos, bloqueo temporal, recuperación por correo y panel administrador.
+        </p>
+      </div>
+    </section>
+
+    <section id="alerta" class="alerta oculto"></section>
+
+    <section id="authContainer" class="grid">
+
+      <!-- LOGIN -->
+      <div class="card">
+        <h2>Iniciar sesión</h2>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="loginCorreo">Correo electrónico</label>
+            <input type="email" id="loginCorreo" placeholder="ejemplo@correo.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="loginPassword">Contraseña</label>
+            <div class="password-box">
+              <input type="password" id="loginPassword" placeholder="Ingrese su contraseña" required />
+              <button type="button" class="btn-icon" onclick="togglePassword('loginPassword')">👁️</button>
+            </div>
+          </div>
+
+          <label class="check">
+            <input type="checkbox" id="soyHumano" />
+            <span>Soy humano</span>
+          </label>
+
+          <div id="captchaImagenBox" class="captcha oculto">
+            <p><strong>CAPTCHA de imagen:</strong> seleccione la imagen que contiene <span id="captchaPregunta"></span>.</p>
+            <div id="captchaOpciones" class="captcha-grid"></div>
+          </div>
+
+          <button type="submit" class="btn-primary">Entrar</button>
+
+          <button type="button" id="btnMostrarRecuperacion" class="btn-link">
+            ¿Olvidaste tu contraseña?
+          </button>
+        </form>
+
+        <p class="nota">
+          Usuario admin de prueba:<br />
+          <strong>admin@demo.com</strong> · <strong>Admin@123</strong>
+        </p>
+      </div>
+
+      <!-- REGISTRO -->
+      <div class="card">
+        <h2>Registrar usuario</h2>
+
+        <form id="registroForm">
+          <div class="form-group">
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" placeholder="Ej: David Coello" required />
+          </div>
+
+          <div class="form-group">
+            <label for="registroCorreo">Correo electrónico</label>
+            <input type="email" id="registroCorreo" placeholder="ejemplo@correo.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="registroPassword">Contraseña</label>
+            <div class="password-box">
+              <input type="password" id="registroPassword" placeholder="Ej: David@2026" required />
+              <button type="button" class="btn-icon" onclick="togglePassword('registroPassword')">👁️</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmarPassword">Confirmar contraseña</label>
+            <input type="password" id="confirmarPassword" placeholder="Repita la contraseña" required />
+          </div>
+
+          <div class="password-rules">
+            <p id="ruleLength">❌ Mínimo 8 caracteres</p>
+            <p id="ruleUpper">❌ Al menos una mayúscula</p>
+            <p id="ruleLower">❌ Al menos una minúscula</p>
+            <p id="ruleNumber">❌ Al menos un número</p>
+            <p id="ruleSpecial">❌ Al menos un carácter especial</p>
+          </div>
+
+          <button type="submit" class="btn-secondary">Crear cuenta</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- RECUPERACIÓN DE CONTRASEÑA -->
+    <section id="recoveryContainer" class="card recovery-card oculto">
+      <div class="panel-header">
+        <div>
+          <h2>Recuperar contraseña</h2>
+          <p>Ingrese su correo, revise el código recibido y cree una nueva contraseña.</p>
+        </div>
+        <button type="button" id="btnVolverLogin" class="btn-danger">Volver</button>
+      </div>
+
+      <form id="recoverySendForm">
+        <div class="form-group">
+          <label for="resetCorreo">Correo registrado</label>
+          <input type="email" id="resetCorreo" placeholder="ejemplo@correo.com" required />
+        </div>
+
+        <button type="submit" class="btn-primary">Enviar código al correo</button>
+      </form>
+
+      <form id="recoveryResetForm" class="oculto">
+        <div class="form-group">
+          <label for="codigoRecuperacion">Código de recuperación</label>
+          <input type="text" id="codigoRecuperacion" maxlength="6" placeholder="Ej: 123456" required />
+        </div>
+
+        <div class="form-group">
+          <label for="nuevaPassword">Nueva contraseña</label>
+          <div class="password-box">
+            <input type="password" id="nuevaPassword" placeholder="Ej: Nueva@2026" required />
+            <button type="button" class="btn-icon" onclick="togglePassword('nuevaPassword')">👁️</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmarNuevaPassword">Confirmar nueva contraseña</label>
+          <input type="password" id="confirmarNuevaPassword" placeholder="Repita la nueva contraseña" required />
+        </div>
+
+        <div class="password-rules">
+          <p id="resetRuleLength">❌ Mínimo 8 caracteres</p>
+          <p id="resetRuleUpper">❌ Al menos una mayúscula</p>
+          <p id="resetRuleLower">❌ Al menos una minúscula</p>
+          <p id="resetRuleNumber">❌ Al menos un número</p>
+          <p id="resetRuleSpecial">❌ Al menos un carácter especial</p>
+        </div>
+
+        <button type="submit" class="btn-secondary">Cambiar contraseña</button>
+      </form>
+    </section>
+
+    <!-- PANEL USUARIO -->
+    <section id="panelUsuario" class="card oculto">
+      <div class="panel-header">
+        <div>
+          <h2>Panel de usuario</h2>
+          <p id="usuarioInfo"></p>
+        </div>
+        <button onclick="cerrarSesion()" class="btn-danger">Cerrar sesión</button>
+      </div>
+
+      <div class="success-box">
+        <h3>Acceso permitido</h3>
+        <p>El usuario inició sesión correctamente después de pasar las validaciones de seguridad.</p>
+      </div>
+    </section>
+
+    <!-- PANEL ADMIN -->
+    <section id="panelAdmin" class="card oculto">
+      <div class="panel-header">
+        <div>
+          <h2>Panel administrador</h2>
+          <p id="adminInfo"></p>
+        </div>
+        <button onclick="cerrarSesion()" class="btn-danger">Cerrar sesión</button>
+      </div>
+
+      <h3>Usuarios registrados</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Intentos</th>
+              <th>CAPTCHA</th>
+              <th>Bloqueado hasta</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tablaUsuarios"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
